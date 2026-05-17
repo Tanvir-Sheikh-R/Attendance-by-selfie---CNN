@@ -1,0 +1,18 @@
+# Utilities
+numpy
+pandas
+
+# Face recognition
+scikit-learn
+
+dlib-bin # for facial vector reading
+git+https://github.com/ageitgey/face_recognition_models
+setuptools # helps tu use github code as libraries
+
+supabase  # Free online database
+bcrypt  # Encrypt passwords
+
+segno  # QR code generator
+pillow  # to working with images
+
+streamlit  # For Front-end Development
