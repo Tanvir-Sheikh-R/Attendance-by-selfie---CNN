@@ -15,7 +15,7 @@ def home_screen():
 
     col1, col2 = st.columns(2)
     with col1:
-        st.header("I'm Student")
+        st.header("I'm Student", )
         st.image("https://i.ibb.co/844D9Lrt/mascot-student.png", width=120)
         if st.button('Student', type= 'primary', icon=':material/arrow_outward:', icon_position='right'):
             st.session_state['login_state'] = 'student'
