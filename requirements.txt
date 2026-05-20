@@ -16,3 +16,6 @@ segno  # QR code generator
 pillow  # to working with images
 
 streamlit  # For Front-end Development
+
+librosa
+resemblyzer
