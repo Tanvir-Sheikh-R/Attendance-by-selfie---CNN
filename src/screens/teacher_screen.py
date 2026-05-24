@@ -2,9 +2,10 @@ import time
 import streamlit as st
 from src.components.header import teacher_header
 from src.components.footer import footer_dashboard
+from src.components.dialog import create_subject_dialog
 from src.ui.base_layout import style_base_layout, style_background_dashboard
 from src.screens.home_screen import home_screen
-from src.database.db import check_teacher_exists, create_teacher, teacher_login
+from src.database.db import check_teacher_exists, create_teacher, teacher_login, get_teacher_subjects
 
 
 def teacher_screen():
@@ -91,6 +92,30 @@ def teacher_tab_manage_sunjects():
         if st.button('Create New Subjects', width='stretch'):
             create_subject_dialog(teacher_id)
 
+
+    # List all Subjects
+    subjects = get_teacher_subjects(teacher_id)
+    if subjects:
+        for sub in subjects:
+            stats = [
+                ('👥', 'Students', sub['total_students']),
+                ('🕰️', 'Classes', sub['total_classes'])
+            ]
+        def share_bin():
+            if st.button(f'Share Code: {sub['name']}', key=f'share_{sub['subject_code']},', icon=':material/share:'):
+                share_subject_dialog(sub['name'], sub['subject_code'])
+            st.space()
+
+
+        subject_card(
+            name = sub['name'],
+            code = sub['subject_code'],
+            section = sub['section'],
+            stats = stats,
+            footer_callback = share_bin
+        )
+    else:
+        st.info('No Subjects Found. Create One Above')
 
 
 def teacher_tab_attendance_records():
