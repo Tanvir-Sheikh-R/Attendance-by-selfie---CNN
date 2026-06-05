@@ -2,27 +2,90 @@ import time
 import numpy as np
 from PIL import Image
 import streamlit as st
-from src.components.header import teacher_header
+
+from src.ui.base_layout import style_background_dashboard, style_base_layout
+from src.components.header import home_header, teacher_header, header_dashboard
 from src.components.footer import footer_dashboard
-from src.ui.base_layout import style_base_layout, style_background_dashboard
-from src.pipeline.face_pipeline import get_face_embeddings, get_all_students, predict_attendance, train_classifier
+from src.pipeline.face_pipeline import predict_attendance, get_face_embeddings, train_classifier
 from src.pipeline.voice_pipeline import get_voice_embedding
-from src.database.db import create_students
-
-
+from src.database.db import get_all_students, create_students, get_teacher_subjects, get_student_attendance, unenroll_students_to_subjects, get_student_subject, enroll_students_to_subjects
+from src.components.subject_card import subject_card
+from src.components.dialog_enroll import enroll_dialog
 
 
 def student_dashboard():
+    student_data = st.session_state.student_data
+    student_id = student_data['student_id']
     c1, c2 = st.columns(2, vertical_alignment='center', gap='xxlarge')
     with c1:
-        teacher_header()
-
+        header_dashboard()
     with c2:
-        if st.button('Go back to Home', key='loginbackbtn', shortcut='control+backspace'):
-            st.session_state['login_state'] = None
+        st.subheader(f"""Welcome, {student_data['name']} """)
+        if st.button("Logout", type='secondary', key='loginbackbtn', shortcut="control+backspace"):
+            st.session_state['is_logged_in'] = False
+            del st.session_state.student_data 
             st.rerun()
 
-    st.header('Dashboard')
+
+    st.space()
+
+    c1, c2 =st.columns(2)
+    with c1:
+        st.header('Your Enrolled Subjects')
+    with c2:
+        if st.button('Enroll in Subject', type='primary', width='stretch', key='enroll_bt'):
+            enroll_dialog()
+            pass
+
+
+    st.divider()
+
+
+    with st.spinner('Loading your enrolled subjects..'):
+        subjects = get_student_subject(student_id)
+        logs = get_student_attendance(student_id)
+
+    stats_map = {}
+
+    for log in logs:
+        sid = log['subject_id']
+
+        if sid not in stats_map:
+            stats_map[sid] = {"total":0, "attended": 0}
+
+        stats_map[sid]['total'] +=1
+
+        if log.get('is_present'):
+            stats_map[sid]['attended'] += 1
+
+
+    cols = st.columns(2)
+    for i, sub_node in enumerate(subjects):
+        sub = sub_node['subjects']
+        sid = sub['subject_id']
+
+
+        stats = stats_map.get(sid,{"total":0, "attended": 0} )
+        def unenroll_button():
+                if st.button("Unenroll from tihs course", type='tertiary', width='stretch', icon=':material/delete_forever:'):
+                    unenroll_students_to_subjects(student_id, sid)
+                    st.toast(f'Unenrolled from {sub['name']} successfully!')
+                    st.rerun()
+
+        with cols[i % 2]:
+
+            subject_card(
+                name = sub['name'],
+                code =sub['subject_code'],
+                section = sub['section'],
+                stats = [
+                    ('📅', 'Total', stats['total']),
+                    ('✅', 'Attended', stats['attended']),
+                ],
+                footer_callback=unenroll_button
+            )
+    footer_dashboard()
+
 
 
 
@@ -44,7 +107,7 @@ def student_screen():
 
     with c2:
         if st.button('Go back to Home', key='loginbackbtn', shortcut='control+backspace'):
-            st.session_state['login_state'] = None
+            st.session_state['login_type'] = None
             st.rerun()
 
 
@@ -100,7 +163,7 @@ def student_screen():
             except Exception:
                 st.error('Voice capture failed!')
 
-            if st.button('Create Account', type='primary'):
+            if st.button('Create Account', type='primary', key='create_account'):
                 if new_name:
                     with st.spinner('Creating student profile!'):
                         encodings = get_face_embeddings(img)

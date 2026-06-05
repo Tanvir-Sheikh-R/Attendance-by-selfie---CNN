@@ -2,7 +2,9 @@ import time
 import streamlit as st
 from src.components.header import teacher_header
 from src.components.footer import footer_dashboard
-from src.components.dialog import create_subject_dialog
+from src.components.dialog_create_subject import create_subject_dialog
+from src.components.dialog_share_subject import share_subject_dialog
+from src.components.subject_card import subject_card
 from src.ui.base_layout import style_base_layout, style_background_dashboard
 from src.screens.home_screen import home_screen
 from src.database.db import check_teacher_exists, create_teacher, teacher_login, get_teacher_subjects
@@ -175,7 +177,7 @@ def teacher_screen_login():
 
     with c2:
         if st.button('Go back to Home', key='loginbackbtn_ts', shortcut='control+backspace'):
-            st.session_state['login_state'] = None
+            st.session_state['login_type'] = None
             st.rerun()
     
 
@@ -216,7 +218,7 @@ def teacher_screen_register():
         teacher_header()
     with c2:
         if  st.button('Go back to Home', key='loginbackbtn_reg', shortcut='control+backspace'):
-            st.session_state['login_state'] = None
+            st.session_state['login_type'] = None
             st.rerun()
     
     st.header('Register into teacher profile', text_alignment='center')
