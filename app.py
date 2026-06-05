@@ -6,7 +6,7 @@ from src.components.dialog_auto_enroll import auto_enroll_dialog
 
 def main():
 
-
+    print(st.session_state)
     if 'login_type' not in st.session_state:
         st.session_state['login_type'] = None
 

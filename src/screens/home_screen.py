@@ -18,14 +18,14 @@ def home_screen():
         st.header("I'm Student" )
         st.image("https://i.ibb.co/844D9Lrt/mascot-student.png", width=120)
         if st.button('Student', type= 'primary', icon=':material/arrow_outward:', icon_position='right'):
-            st.session_state['login_state'] = 'student'
+            st.session_state['login_type'] = 'student'
             st.rerun()
 
     with col2:
         st.header("I'm Teacher")
         st.image("https://i.ibb.co/CsmQQV6X/mascot-prof.png", width=145)
         if st.button('Teacher', type= 'primary', icon=':material/arrow_outward:', icon_position='right'):
-            st.session_state['login_state'] = 'teacher'
+            st.session_state['login_type'] = 'teacher'
             st.rerun()
 
     footer_home()

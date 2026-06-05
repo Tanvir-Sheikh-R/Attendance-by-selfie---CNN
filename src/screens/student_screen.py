@@ -35,7 +35,7 @@ def student_dashboard():
     with c2:
         if st.button('Enroll in Subject', type='primary', width='stretch', key='enroll_bt'):
             enroll_dialog()
-            pass
+            
 
 
     st.divider()
@@ -67,7 +67,7 @@ def student_dashboard():
 
         stats = stats_map.get(sid,{"total":0, "attended": 0} )
         def unenroll_button():
-                if st.button("Unenroll from tihs course", type='tertiary', width='stretch', icon=':material/delete_forever:'):
+                if st.button("Unenroll from tihs course", type='tertiary', width='stretch', icon=':material/delete_forever:', key=sid):                         
                     unenroll_students_to_subjects(student_id, sid)
                     st.toast(f'Unenrolled from {sub['name']} successfully!')
                     st.rerun()
@@ -75,6 +75,7 @@ def student_dashboard():
         with cols[i % 2]:
 
             subject_card(
+
                 name = sub['name'],
                 code =sub['subject_code'],
                 section = sub['section'],
@@ -162,7 +163,7 @@ def student_screen():
 
             except Exception:
                 st.error('Voice capture failed!')
-
+                
             if st.button('Create Account', type='primary', key='create_account'):
                 if new_name:
                     with st.spinner('Creating student profile!'):
