@@ -12,6 +12,7 @@ from src.components.dialog_create_subject import create_subject_dialog
 from src.components.dialog_share_subject import share_subject_dialog
 from src.components.dialog_add_photos import add_photos_dialog
 from src.components.dialog_attendance_result import attendance_result_dialog
+from src.components.dialog_attendance_voice import voice_attendance_dialog
 
 from src.components.subject_card import subject_card
 from src.ui.base_layout import style_base_layout, style_background_dashboard
@@ -174,7 +175,6 @@ def teacher_tab_take_attendance():
                             "Source": ", ".join(sources) if is_present else "-",
                             "Status": "✅ Present" if is_present else "❌ Absent"
                         })
-                        print(results)
 
                         attendance_to_log.append({
                             'student_id': student['student_id'],
@@ -189,7 +189,7 @@ def teacher_tab_take_attendance():
 
         with c3:
             if st.button('Use Voice Attendance', width='stretch', type='primary', icon=':material/mic:'):
-                voice_attendance_dialog()
+                voice_attendance_dialog(selected_subject_id)
 
         
 
