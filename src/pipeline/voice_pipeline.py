@@ -1,9 +1,9 @@
+import patch_resemblyzer  # must be first - before ANY resemblyzer import
 from resemblyzer import VoiceEncoder, preprocess_wav
 import numpy as np 
 import io
 import librosa
 import streamlit as st
-
 
 @st.cache_resource
 def load_voice_encoder():
