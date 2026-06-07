@@ -1,5 +1,6 @@
 streamlit  # For Front-end Development
 setuptools # helps tu use github code as libraries
+webrtcvad-wheels
 # Utilities
 numpy
 pandas
