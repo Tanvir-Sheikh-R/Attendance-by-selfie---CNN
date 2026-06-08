@@ -1,5 +1,5 @@
 streamlit  # For Front-end Development
-setuptools # helps tu use github code as libraries
+setuptools==69.5.1  # helps tu use github code as libraries
 webrtcvad-wheels
 # Utilities
 numpy
