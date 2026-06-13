@@ -25,5 +25,7 @@ def enroll_dialog():
                     st.success('Succesfully enrolled!')
                     time.sleep(1)
                     st.rerun()
+            else:
+                st.error('Wrong Subject code!')
         else:
             st.warning('Please enter a subject code')

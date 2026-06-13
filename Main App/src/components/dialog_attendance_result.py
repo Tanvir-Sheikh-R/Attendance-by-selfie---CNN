@@ -9,6 +9,8 @@ from src.database.db import create_attendance
 
 
 def show_attendance_results(df, logs):
+    print(df) 
+    print('log',logs)
     st.write('Please review attendance before confirming.')
     st.dataframe(df, hide_index=True, width='stretch')
 

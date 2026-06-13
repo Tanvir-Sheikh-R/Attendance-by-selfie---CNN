@@ -214,19 +214,19 @@ def teacher_tab_manage_sunjects():
                 ('👥', 'Students', sub['total_students']),
                 ('🕰️', 'Classes', sub['total_classes'])
             ]
-        def share_bin():
-            if st.button(f"Share Code: {sub['name']}", key=f"share_{sub['subject_code']}", icon=':material/share:'):
-                share_subject_dialog(sub['name'], sub['subject_code'])
-            st.space()
+            def share_bin():
+                if st.button(f"Share Code: {sub['name']}", key=f"share_{sub['subject_code']}", icon=':material/share:'):
+                    share_subject_dialog(sub['name'], sub['subject_code'])
+                st.space()
 
 
-        subject_card(
-            name = sub['name'],
-            code = sub['subject_code'],
-            section = sub['section'],
-            stats = stats,
-            footer_callback = share_bin
-        )
+            subject_card(
+                name = sub['name'],
+                code = sub['subject_code'],
+                section = sub['section'],
+                stats = stats,
+                footer_callback = share_bin
+            )
     else:
         st.info('No Subjects Found. Create One Above')
 
@@ -249,6 +249,7 @@ def teacher_tab_attendance_records():
             'Time': datetime.fromisoformat(ts).strftime('%Y-%m-%d %I:%M %p') if ts else "N'A",
             'Subject': r['subjects']['name'],
             'Subject Code': r['subjects']['subject_code'],
+            'student_id': r.get('student_id'),
             'is_present': bool(r.get('is_present', False))
         })
 
@@ -258,7 +259,10 @@ def teacher_tab_attendance_records():
         df.groupby(['ts_group', 'Time', 'Subject', 'Subject Code'])
         .agg(
             Present_Count = ('is_present', 'sum'),
-            Total_Count = ('is_present', 'count')
+            Total_Count = ('is_present', 'count'),
+            Student_IDs = ('student_id', lambda ids: ', '.join(
+                str(int(i)) for i in sorted(ids.dropna().unique())
+            ))
         ).reset_index()
     )
     summary['Attendance Stats'] = (
@@ -266,7 +270,7 @@ def teacher_tab_attendance_records():
         + summary['Total_Count'].astype(str) + ' Students'
     )
     display_df = ( summary.sort_values(by='ts_group' ,ascending=False)
-                  [['Time', 'Subject', 'Subject Code', 'Attendance Stats']]
+                  [['Time', 'Subject', 'Subject Code', 'Student_IDs', 'Attendance Stats']]
                   )
     
     st.dataframe(display_df, width='stretch', hide_index=True)
